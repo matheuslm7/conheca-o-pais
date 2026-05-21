@@ -1,0 +1,86 @@
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { AuthLayout } from '../components/layout/AuthLayout'
+import { getApiErrorMessage } from '../lib/apiErrors'
+import { signUp } from '../services/auth.service'
+
+export function Register() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault()
+    setLoading(true)
+    setError('')
+
+    try {
+      await signUp({ email, password })
+      navigate('/login')
+    } catch (err) {
+      setError(
+        getApiErrorMessage(err, 'Erro ao criar conta. Verifique os dados.')
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <AuthLayout
+      title="Criar conta"
+      subtitle="Comece a explorar o mundo"
+      footer={
+        <>
+          Já tem conta?{' '}
+          <Link to="/login" className="link-accent">
+            Entrar
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <p role="alert" className="alert-error">
+            {error}
+          </p>
+        )}
+        <div className="space-y-1.5">
+          <label htmlFor="email" className="text-xs font-medium text-muted">
+            Email
+          </label>
+          <input
+            id="email"
+            className="input-field"
+            type="email"
+            placeholder="seu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label htmlFor="password" className="text-xs font-medium text-muted">
+            Senha
+          </label>
+          <input
+            id="password"
+            className="input-field"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="new-password"
+          />
+        </div>
+        <button className="btn-primary w-full" type="submit" disabled={loading}>
+          {loading ? 'Criando…' : 'Criar conta'}
+        </button>
+      </form>
+    </AuthLayout>
+  )
+}
