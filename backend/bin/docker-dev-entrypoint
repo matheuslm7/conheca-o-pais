@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+cd /app
+
+echo "==> Instalando gems..."
+bundle install
+
+echo "==> Preparando banco de dados..."
+bundle exec rails db:prepare
+
+rm -f tmp/pids/server.pid
+
+echo "==> Iniciando Rails..."
+exec bundle exec rails server -p 3000 -b 0.0.0.0
