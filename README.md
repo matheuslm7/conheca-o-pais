@@ -117,6 +117,6 @@ docker compose down -v       # parar e resetar volumes
 
 1. Cadastre-se e faça login no frontend
 2. Busque um país (ex.: `Brasil`, `Portugal`)
-3. Opcional: teste a API com Postman/Insomnia — login em `/users/sign_in`, copie o header `Authorization` e use em `GET /api/v1/countries?name=...`
+3. Opcional: teste a API com Postman/Insomnia — login em `/users/sign_in`, copie o header `Authorization` e use em `GET /api/v1/countries?code=...`
 
 ---
