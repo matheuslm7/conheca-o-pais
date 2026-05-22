@@ -27,7 +27,7 @@ services:
       BUNDLE_PATH: /usr/local/bundle
       DATABASE_URL: postgresql://${POSTGRES_USER:-conheca_user}:${POSTGRES_PASSWORD:-conheca_pass}@postgres:5432/${POSTGRES_DB:-conheca_development}
       TEST_DATABASE_URL: postgresql://${POSTGRES_USER:-conheca_user}:${POSTGRES_PASSWORD:-conheca_pass}@postgres:5432/conheca_test
-      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     ports:
       - "3000:3000"

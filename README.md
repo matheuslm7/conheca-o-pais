@@ -32,19 +32,21 @@ cd conheca-o-pais
 cp .env.example .env
 ```
 
-Gere as chaves no `.env` (valores de exemplo no `.env.example`):
+Gere as chaves no `.env` (copie o `.env.example` e substitua os valores de exemplo):
 
 ```bash
-# RAILS_MASTER_KEY
-openssl rand -hex 16 # WSL 
-#OU
--join ((1..16) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) }) # CMD 
+# SECRET_KEY_BASE (sessões Rails/Devise — mínimo 32 caracteres)
+openssl rand -hex 32   # WSL/Linux
+# PowerShell:
+-join ((1..32) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) })
 
 # JWT_SECRET_KEY
 openssl rand -hex 64
-#OU
--join ((1..64) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) }) # CMD 
+# PowerShell:
+-join ((1..64) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) })
 ```
+
+> **Não** defina `RAILS_MASTER_KEY` no `.env` para desenvolvimento com Docker, a menos que você tenha o arquivo `backend/config/master.key` do projeto. Uma chave aleatória que não corresponde a `credentials.yml.enc` causa o erro `ActiveSupport::MessageEncryptor::InvalidMessage`.
 
 Suba tudo:
 

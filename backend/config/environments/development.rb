@@ -3,6 +3,10 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Docker/dev: secret via ENV (JWT já usa ENV). Não use RAILS_MASTER_KEY aleatória no .env —
+  # ela precisa ser a mesma de config/master.key ou o Rails falha ao abrir credentials.
+  config.secret_key_base = ENV.fetch("SECRET_KEY_BASE")
+
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
