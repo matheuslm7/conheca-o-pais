@@ -35,8 +35,15 @@ cp .env.example .env
 Gere as chaves no `.env` (valores de exemplo no `.env.example`):
 
 ```bash
-openssl rand -hex 16   # RAILS_MASTER_KEY
-openssl rand -hex 64   # JWT_SECRET_KEY
+# RAILS_MASTER_KEY
+openssl rand -hex 16 # WSL 
+#OU
+-join ((1..16) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) }) # CMD 
+
+# JWT_SECRET_KEY
+openssl rand -hex 64
+#OU
+-join ((1..64) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) }) # CMD 
 ```
 
 Suba tudo:
