@@ -60,6 +60,41 @@ RSpec.describe "Api::V1::Countries", type: :request do
         expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)).to eq("error" => "Nome do país é obrigatório.")
       end
+
+      it "returns country list when name and code are absent" do
+        stub_request(:get, "https://restcountries.com/v3.1/all?fields=name,flags,cca2")
+          .to_return(
+            status: 200,
+            body: CountryPayloads.all_countries_raw.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+
+        get "/api/v1/countries", headers: headers
+
+        expect(response).to have_http_status(:ok)
+
+        json = JSON.parse(response.body)
+        expect(json).to eq(
+          [
+            { "name" => "Brazil", "code" => "BR", "flag_url" => "https://flagcdn.com/br.svg" },
+            { "name" => "Japan", "code" => "JP", "flag_url" => "https://flagcdn.com/jp.svg" }
+          ]
+        )
+      end
+
+      it "returns serialized country by code" do
+        stub_request(:get, "https://restcountries.com/v3.1/alpha/BR")
+          .to_return(
+            status: 200,
+            body: CountryPayloads.brazil_raw.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+
+        get "/api/v1/countries", params: { code: "BR" }, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body).first["name"]).to eq("Brazil")
+      end
     end
   end
 end

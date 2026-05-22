@@ -1,13 +1,20 @@
 import { useNavigate } from 'react-router-dom'
 import { CountryCard } from '../components/country/CountryCard'
 import { AppHeader } from '../components/layout/AppHeader'
-import { useCountrySearch } from '../hooks/useCountrySearch'
+import { useCountries } from '../hooks/useCountries'
 import { signOut } from '../services/auth.service'
 
 export function Countries() {
   const navigate = useNavigate()
-  const { query, setQuery, countries, loading, error, searched, search } =
-    useCountrySearch()
+  const {
+    countryList,
+    selectedCode,
+    country,
+    listLoading,
+    detailLoading,
+    error,
+    selectCountry,
+  } = useCountries()
 
   async function handleLogout() {
     await signOut()
@@ -20,55 +27,51 @@ export function Countries() {
 
       <main className="page-enter mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
         <section className="card-surface p-4 sm:p-5">
-          <label htmlFor="search" className="mb-2 block text-xs font-medium text-muted">
-            Buscar país
+          <label htmlFor="country" className="mb-2 block text-xs font-medium text-muted">
+            Escolha um país
           </label>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <input
-              id="search"
-              className="input-field sm:flex-1"
-              placeholder="Ex.: Brasil, Japão, Portugal…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && search()}
-            />
-            <button
-              type="button"
-              onClick={search}
-              disabled={loading || !query.trim()}
-              className="btn-primary shrink-0 px-6 sm:min-w-[7.5rem]"
-            >
-              {loading ? 'Buscando…' : 'Buscar'}
-            </button>
-          </div>
+          <select
+            id="country"
+            className="input-field w-full"
+            value={selectedCode}
+            onChange={(e) => selectCountry(e.target.value)}
+            disabled={listLoading}
+          >
+            <option value="">
+              {listLoading ? 'Carregando países…' : 'Selecione um país'}
+            </option>
+            {countryList.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.name}
+              </option>
+            ))}
+          </select>
         </section>
 
         <div className="mt-8">
-          {loading && (
-            <p className="text-center text-sm text-muted">Buscando países…</p>
+          {listLoading && (
+            <p className="text-center text-sm text-muted">Carregando lista de países…</p>
           )}
 
-          {error && !loading && (
+          {detailLoading && (
+            <p className="text-center text-sm text-muted">Carregando informações…</p>
+          )}
+
+          {error && !listLoading && !detailLoading && (
             <p role="alert" className="alert-error text-center">
               {error}
             </p>
           )}
 
-          {!loading && !error && !searched && (
+          {!listLoading && !detailLoading && !error && !selectedCode && (
             <p className="text-center text-sm text-muted">
-              Digite o nome de um país e clique em buscar.
+              Selecione um país na lista para ver as informações.
             </p>
           )}
 
-          {!loading && !error && searched && countries.length === 0 && (
-            <p className="text-center text-sm text-muted">Nenhum resultado para essa busca.</p>
-          )}
-
-          {countries.length > 0 && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {countries.map((country) => (
-                <CountryCard key={country.name} country={country} />
-              ))}
+          {country && !detailLoading && (
+            <div className="mx-auto max-w-sm">
+              <CountryCard country={country} />
             </div>
           )}
         </div>

@@ -32,7 +32,7 @@ export function Login() {
   return (
     <AuthLayout
       title="Entrar"
-      subtitle="Descubra informações sobre países"
+      subtitle="Escolha um país e descubra informações"
       footer={
         <>
           Não tem conta?{' '}

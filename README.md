@@ -1,6 +1,6 @@
 # Conheça o País
 
-Aplicação web para buscar informações de países (capital, população, bandeira, idioma, moeda, etc.). O usuário se cadastra, faz login e consulta países pelo nome — inclusive em português (ex.: *Brasil*, *Japão*).
+Aplicação web para consultar informações de países (capital, população, bandeira, idioma, moeda, etc.). O usuário se cadastra, faz login e escolhe um país em uma lista — sem precisar digitar o nome.
 
 | Frontend | Backend | Banco |
 |----------|---------|-------|
@@ -45,9 +45,6 @@ openssl rand -hex 64
 # PowerShell:
 -join ((1..64) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) })
 ```
-
-> **Não** defina `RAILS_MASTER_KEY` no `.env` para desenvolvimento com Docker, a menos que você tenha o arquivo `backend/config/master.key` do projeto. Uma chave aleatória que não corresponde a `credentials.yml.enc` causa o erro `ActiveSupport::MessageEncryptor::InvalidMessage`.
-
 Suba tudo:
 
 ```bash
@@ -73,9 +70,10 @@ Base: `http://localhost:3000`
 | POST | `/users` | Não | Cadastro |
 | POST | `/users/sign_in` | Não | Login — JWT no header `Authorization` |
 | DELETE | `/users/sign_out` | Sim | Logout |
-| GET | `/api/v1/countries?name=Brasil` | Sim | Busca país por nome |
+| GET | `/api/v1/countries` | Sim | Lista todos os países (nome, código, bandeira) |
+| GET | `/api/v1/countries?code=BR` | Sim | Detalhes de um país pelo código ISO (cca2) |
 
-**Exemplo de resposta** (`GET /api/v1/countries?name=Brasil`):
+**Exemplo de resposta** (`GET /api/v1/countries?code=BR`):
 
 ```json
 [

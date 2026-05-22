@@ -16,7 +16,7 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
   return fallback
 }
 
-export function getCountrySearchErrorMessage(error: unknown): string | null {
+export function getCountryApiErrorMessage(error: unknown): string | null {
   if (!axios.isAxiosError<ApiErrorBody>(error)) {
     return 'Erro de conexão. Verifique sua internet e tente novamente.'
   }
@@ -31,7 +31,7 @@ export function getCountrySearchErrorMessage(error: unknown): string | null {
     case 422:
       return typeof serverError === 'string'
         ? serverError
-        : 'Informe um nome de país válido.'
+        : 'Selecione um país válido.'
     default:
       if (error.response && error.response.status >= 500) {
         return 'Serviço indisponível no momento. Tente novamente em instantes.'
@@ -39,6 +39,6 @@ export function getCountrySearchErrorMessage(error: unknown): string | null {
       if (!error.response) {
         return 'Erro de conexão. Verifique sua internet e tente novamente.'
       }
-      return 'Não foi possível buscar o país. Tente novamente.'
+      return 'Não foi possível carregar os dados do país. Tente novamente.'
   }
 }
